@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.geom.*;
 
 public class Circ extends PhOb{
-	public int radius;
 	public static final int DENSITY=1;
 	//public static final Color[] cols={Color.blue,Color.red,Color.green,Color.cyan,Color.yellow,Color.magenta};
 	Color col;
@@ -45,29 +44,67 @@ public class Circ extends PhOb{
 		initEPE();
 	}
 	
-	@Override
+/*	@Override
 	public void tick() {
 		super.tick();
 		if(MainApplet.WALL==1){
 			if(y-radius<0){
 				vy=Math.abs(vy);
+				y+=vy*0.1;
 				//y-=y-radius;
 			}
 			if(y+radius>MainApplet.D.height){
 				vy=-Math.abs(vy);
+				y+=vy*0.1;
 				//y-=y+radius-MainApplet.D.height;
 			}
 			if(x-radius<0){
 				vx=Math.abs(vx);
+				x+=vx*0.1;
 				//x-=x-radius;
 			}
 			if(x+radius>MainApplet.D.width){
 				vx=-Math.abs(vx);
+				x+=vx*0.1;
 				//x-=x+radius-MainApplet.D.width;
 			}
 		}
-	}
+	}*/
 
+	@Override
+	public void tock() {
+		for(int i=0;i<dvs.length;i++){
+			vx+=dvs[i][0];
+			vy+=dvs[i][1];
+			dvs[i][0]=0;
+			dvs[i][1]=0;
+		}
+		if(MainApplet.WALL==1){
+			if(y-radius<0){
+				vy=Math.abs(vy);
+			}
+			if(y+radius>MainApplet.D.height){
+				vy=-Math.abs(vy);
+			}
+			if(x-radius<0){
+				vx=Math.abs(vx);
+			}
+			if(x+radius>MainApplet.D.width){
+				vx=-Math.abs(vx);
+			}
+		}
+		vx*=MainApplet.mu;
+		vy*=MainApplet.mu;
+		x+=vx/MainApplet.TPS;
+		y+=vy/MainApplet.TPS;
+		if(MainApplet.WALL==2){
+			x+=MainApplet.D.width;
+			x%=MainApplet.D.width;
+			y+=MainApplet.D.height;
+			y%=MainApplet.D.height;
+		}
+	}
+	
 	@Override
 	public void paint(Graphics2D g) {
 		g.setPaint(col);

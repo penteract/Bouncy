@@ -60,6 +60,7 @@ public abstract class PhOb implements Updateable {
 	}
 	
 	public double EPE(){
+		//TODO sort out repulsion
 		double E=0;
 		for(PhOb j:all) if(j!=this){
 			if(MainApplet.WALL==1 || MainApplet.WALL==0){
@@ -106,7 +107,8 @@ public abstract class PhOb implements Updateable {
 				double dy = y-j.y;
 				double d=Math.sqrt((dx*dx+dy*dy));
 				double rt=radius+j.radius;
-				double F=MainApplet.k*((q1*j.q1+q2*j.q2)+rt*mq*j.mq/d)/(d*d*d);
+				double rep=Math.pow(rt,MainApplet.repulsion)*mq*j.mq/Math.pow(d,MainApplet.repulsion);
+				double F=MainApplet.k*((q1*j.q1+q2*j.q2)+rep)/(d*d*d);
 				//System.out.println(F);
 				//if(touching(j)[1][1])){
 					fx+=F*dx;//extra division by d happens in F
@@ -118,8 +120,9 @@ public abstract class PhOb implements Updateable {
 				double dy = y-j.y+j1*MainApplet.D.height;
 				double d=Math.sqrt(dx*dx+dy*dy);
 				double rt=radius+j.radius;
-				double F=MainApplet.k*((q1*j.q1+q2*j.q2)+rt*mq*j.mq/d)/(d*d*d);
-				System.out.println(F);
+				double rep=Math.pow(rt,MainApplet.repulsion)*mq*j.mq/Math.pow(d,MainApplet.repulsion);
+				double F=MainApplet.k*((q1*j.q1+q2*j.q2)+rep)/(d*d*d);
+				//System.out.println(F);
 				//if(!(i1<=1 && i1>=-1 && j1<=1 && j1>=-1 && touching(pj)[i1+1][j1+1])){
 					fx+=F*dx;//extra division by d happens in F
 					fy+=F*dy;
