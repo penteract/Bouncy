@@ -4,10 +4,11 @@ import java.util.*;
 
 public abstract class PhOb implements Updateable {
 	//anything with mass, charge, extra charge, position and velocity
+	public int radius;
 	double mass;
 	double x,y;
 	double vx,vy;
-	double q1,q2;
+	double q1,q2,mq;
 	double dvs[][]={{0,0},{0,0}};
 	public static final int numloops=3;
 	ArrayList<Double> EPEs;
@@ -21,6 +22,7 @@ public abstract class PhOb implements Updateable {
 		this.vy=vy;
 		this.q1=0;
 		this.q2=0;
+		mq=Math.sqrt(q1*q1+q2*q2);
 	}
 	
 	PhOb(double m, double x, double y, double vx, double vy, double q1, double q2){
@@ -31,6 +33,7 @@ public abstract class PhOb implements Updateable {
 		this.vy=vy;
 		this.q1=q1;
 		this.q2=q2;
+		mq=Math.sqrt(q1*q1+q2*q2);
 		MainApplet.all.add(this);
 	}
 	
@@ -87,7 +90,7 @@ public abstract class PhOb implements Updateable {
 
 	public void tick() {
 		double fx=0,fy=0;
-		for(int i=0;i<all.size();i++){
+		/*for(int i=0;i<all.size();i++){
 			PhOb pi=all.get(i);
 			if (pi!=this){
 				double dx = x-pi.x;
@@ -96,25 +99,30 @@ public abstract class PhOb implements Updateable {
 				double v1sq=vx*vx+vy*vy;
 				double v2sq=v1sq+(EPEs.get(i)-k2)/mass;
 			}
-		}
-
+		}*/
 		for(PhOb j:all) if(j!=this){
-		if(MainApplet.WALL==1 || MainApplet.WALL==0){
+			if(MainApplet.WALL==1 || MainApplet.WALL==0){
 				double dx = x-j.x;
 				double dy = y-j.y;
 				double d=Math.sqrt((dx*dx+dy*dy));
-				//if(!touching(j)[1][1]){
-					fx+=MainApplet.k*(q1*j.q1+q2*j.q2)*dx/(d*d*d);
-					fy+=MainApplet.k*(q1*j.q1+q2*j.q2)*dy/(d*d*d);
+				double rt=radius+j.radius;
+				double F=MainApplet.k*((q1*j.q1+q2*j.q2)+rt*mq*j.mq/d)/(d*d*d);
+				//System.out.println(F);
+				//if(touching(j)[1][1])){
+					fx+=F*dx;//extra division by d happens in F
+					fy+=F*dy;
 				//}
 			}
 			if(MainApplet.WALL==2) for (int i1=-2;i1<=2;i1++) for (int j1=-2;j1<=2;j1++){
 				double dx = x-j.x+i1*MainApplet.D.width;
 				double dy = y-j.y+j1*MainApplet.D.height;
 				double d=Math.sqrt(dx*dx+dy*dy);
+				double rt=radius+j.radius;
+				double F=MainApplet.k*((q1*j.q1+q2*j.q2)+rt*mq*j.mq/d)/(d*d*d);
+				System.out.println(F);
 				//if(!(i1<=1 && i1>=-1 && j1<=1 && j1>=-1 && touching(pj)[i1+1][j1+1])){
-					fx+=MainApplet.k*(q1*j.q1+q2*j.q2)*dx/(d*d*d);
-					fy+=MainApplet.k*(q1*j.q1+q2*j.q2)*dy/(d*d*d);
+					fx+=F*dx;//extra division by d happens in F
+					fy+=F*dy;
 				//}
 			}
 		}
